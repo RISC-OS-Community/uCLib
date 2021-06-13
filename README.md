@@ -37,9 +37,6 @@ As for the problems reporting please use the Issues option here on GitHub also t
 ### Contributing
 We welcome improvements and new ideas, before you submit your changes please have a look at the Contributing Guidelines [here](./CONTRIBUTING.md)
 
-## Official EzINI Documentation
-See https://michaeldipperstein.github.io/ezini/
-
 ## License
 uCLib is copyright by Paolo Fabio Zaino and is distributed under Apache License 2.0, please read the license [here](./LICENSE) for details
 
