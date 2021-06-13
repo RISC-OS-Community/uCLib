@@ -13,9 +13,13 @@
  *
  */
 
+// Include the uCLib header:
 #include "LibuCLib:uCLib.h"
+
+// include own header:
 #include "main.h"
 
+// define main function in ANSI C99 format:
 int main(int argc, char *argv[])
 {
 	int rval = 0;
