@@ -13,7 +13,7 @@ To build the lib is very easy, just double click on the Mk script file you'll fi
 The building process will copy the object files in !LibuCLib app in the right places and also the header files as required.
 
 ## Building using GCC
-At this time buildin gusing GCC is not yet supported, so please be patient, it will definitely be done as soon as the library gets useful enough.
+At this time building using GCC is not yet supported, so please be patient, it will definitely be done as soon as the library gets useful enough.
 
 ## How to use the library
 To understand the details of how to use it please have a look at the test files in tests
