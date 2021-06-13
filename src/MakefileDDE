@@ -1,0 +1,11 @@
+# Makefile for uclit
+
+COMPONENT = uCLib
+OBJS      = entry uCLib_base
+
+include CLibrary
+#include CUtil
+LIBS    =
+LDFLAGS = -bin
+
+# Dynamic dependencies:

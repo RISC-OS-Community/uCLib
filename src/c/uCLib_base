@@ -1,0 +1,70 @@
+#include "uCLib.h"
+
+void sys_exit(int error_code)
+{
+	// TODO: Improve code to handle error block
+	__asm
+	{
+		MOV r0, #0
+		MOV r1, #ABEX
+		MOV r2, error_code
+		SWI OS_Exit, {r0-r2}, {}, {}
+	}
+}
+
+int sys_write_stdout(const char *buf, unsigned count)
+{
+	int rval = 0;
+	if ( count == 0 ) {
+		// Display a null terminated string
+		__asm
+		{
+			MOV r0, buf
+			SWI OS_Write0, {r0}
+		}
+	} else {
+		// Display a string of "count" lenght
+		__asm
+		{
+			STMFD sp, {r0,r1,r2}
+			MOV   a1, #0
+			MOV   a2, buf
+			MOV   a3, count
+		loop:
+			LDRB  a1, [a2], #1
+			CMP   a3, #0
+			BEQ   done
+			SWI   OS_WriteC, {a1}
+			ADD   a2, a2, #1
+			SUBS  a3, a3, #1
+			B     loop
+		done:
+			LDMFD sp, {r0,r1,r2}
+		}
+	}
+	return rval;
+}
+
+void sys_write_newline(void)
+{
+	// Display a New Line
+	__asm
+	{
+		SWI OS_NewLine
+	}
+}
+
+int sys_write(unsigned fd, const char *buf, unsigned count)
+{
+	int rval = 0;
+	switch (fd)
+	{
+		 case 0:// Ignore
+				break;
+		 case 1:// STDOUT
+		default:// Default is stdout
+				rval = sys_write_stdout(buf, count);
+	}
+	return rval;
+}
+

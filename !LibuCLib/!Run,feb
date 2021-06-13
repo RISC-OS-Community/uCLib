@@ -1,0 +1,6 @@
+| Lib Micro C Library (uCLib) for RISC OS
+| by Paolo Fabio Zaino 2021
+
+IconSprites <Obey$Dir>.!Sprites
+Set LibuCLib$Dir <Obey$Dir>
+Set LibuCLib$Path <LibuCLib$Dir>.
