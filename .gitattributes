@@ -1,3 +1,6 @@
+src/c/** gitlab-language=c linguist-language=c linguist-detectable=true
+src/h/** gitlab-language=c linguist-language=c linguist-detectable=true
+src/c++/** gitlab-language=cpp linguist-language=cpp linguist-detectable=true
 src/cpp/** gitlab-language=cpp linguist-language=cpp linguist-detectable=true
 src/bas/** gitlab-language=bbcbasic linguist-language=bbcbasic linguist-detectable=true
 src/Hdr/** gitlab-language=forth linguist-language=assembly linguist-detectable=true
@@ -14,4 +17,3 @@ tests/**/Hdr/** gitlab-language=forth linguist-language=assembly linguist-detect
 tests/**/s/** gitlab-language=assembly linguist-language=assembly linguist-detectable=true
 tests/**/fth/** gitlab-language=forth linguist-language=forth linguist-detectable=true
 tests/**/p/** gitlab-language=forth linguist-language=prolog linguist-detectable=true
-
