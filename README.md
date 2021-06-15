@@ -36,7 +36,7 @@ Feedback is always welcome!
 For any issue you may encounter, please use the "Issues" option here on GitHub. You can find it at the top of the page. Please do not try to contact us directly, the RISC OS Community handles all the communications here on GitHub.
 
 ### Requesting new features
-As for the problems reporting please use the Issues option here on GitHub also to request new features.
+As for the problems reporting, please use the Issues option here on GitHub also to request new features.
 
 ### Contributing
 We welcome improvements and new ideas, before you submit your changes please have a look at the Contributing Guidelines [here](./CONTRIBUTING.md)
