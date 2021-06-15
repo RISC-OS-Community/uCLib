@@ -46,7 +46,7 @@ uCLib is copyright by Paolo Fabio Zaino and is distributed under Apache License 
 ## Contributors
 [![Paolo](https://avatars2.githubusercontent.com/u/8824337?s=42&v=4)](https://github.com/pzaino)  - uCLib original author
 
-[![InteractiveYelp](https://avatars2.githubusercontent.com/u/72400477?s=38&v=4)](https://github.com/InteractiveYelp)  - Code reviewer
+[![InteractiveYelp](https://avatars2.githubusercontent.com/u/72400477?s=42&v=4 | width=42)](https://github.com/InteractiveYelp)  - Code reviewer
 
 [![Andreas](https://avatars2.githubusercontent.com/u/358614?s=42&v=4)](https://github.com/skymandr)  - Code reviewer
 
