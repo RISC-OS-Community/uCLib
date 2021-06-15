@@ -44,9 +44,9 @@ We welcome improvements and new ideas, before you submit your changes please hav
 uCLib is copyright by Paolo Fabio Zaino and is distributed under Apache License 2.0, please read the license [here](./LICENSE) for details
 
 ## Contributors
-[<img src="https://avatars2.githubusercontent.com/u/8824337?s=42&v=4" width="42" caption="Paolo" alt="Paolo">](https://github.com/pzaino)  - uCLib original author
+[<img src="https://avatars2.githubusercontent.com/u/8824337?s=42&v=4" width="42" alt="Paolo">](https://github.com/pzaino)  - uCLib original author
 
-[<img src="https://avatars2.githubusercontent.com/u/72400477?s=42&v=4" width="42" caption="InteractiveYelp" alt="InteractiveYelp">](https://github.com/InteractiveYelp)  - Code reviewer
+[<img src="https://avatars2.githubusercontent.com/u/72400477?s=42&v=4" width="42" alt="InteractiveYelp">](https://github.com/InteractiveYelp)  - Code reviewer
 
-[<img src="https://avatars2.githubusercontent.com/u/358614?s=42&v=4" width="42" caption="skymandr" alt="skymandr">](https://github.com/skymandr)  - Code reviewer
+[<img src="https://avatars2.githubusercontent.com/u/358614?s=42&v=4" width="42" alt="skymandr">](https://github.com/skymandr)  - Code reviewer
 
