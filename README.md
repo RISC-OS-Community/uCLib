@@ -1,6 +1,6 @@
-# RISC OS uCLib
+# RISC OS uCLib (Micro C Library)
 
-This is a simple and really small C Library to be used when creating Utils in C.
+This is a simple and really small C Library to be used when creating Utils in C. The library right now is only for static linking.
 
 ## Build the lib
 To build from the source just git clone this repo and then go to uCLib -> src directory.
