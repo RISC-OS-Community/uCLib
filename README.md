@@ -22,9 +22,10 @@ At this time building using GCC is not yet supported, so please be patient, it w
 To understand the details of how to use it, please have a look at the test files in the "tests" directory.
 
 In general terms the idea behind this library is to provide a minimal and functional set of C functions so that you can easily create utils that:
-- accept input parameters from the command line
-- can print out on the screen messages
-- can do file I/O
+- Accept input parameters from the command line
+- Can print out messages on the screen
+- Can do file I/O
+- Have basic C strings support (for text manipoulation)
 
 If you believe there is a need for more than the above please open an appropriate issue using the "Issues" tab above.
 
