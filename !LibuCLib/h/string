@@ -1,5 +1,5 @@
-#ifndef __UCLIB_UCLIB_H
-#define __UCLIB_UCLIB_H
+#ifndef __UCLIB_STRING_H
+#define __UCLIB_STRING_H
 
 /*
  * RISC OS uCLib (Micro C Library)
@@ -56,25 +56,10 @@
  *
  */
 
-// Include required uCLib libraries:
-#include "CLib:swis.h"
+// This file contains re-definitions of string.h without
+// dependecies on the SCL/ANSILib.
 
-// uCLib Macros:
-#define UNUSED(x) (x = x)
-#define ABEX 0x58454241
-
-// Data Types
-// typedef int size_t;
-
-// Public functions:
-void sys_exit(int error_code);
-
-int sys_write_stdout(const char *buf, unsigned count);
-
-void sys_write_newline(void);
-
-int sys_write(unsigned fd, const char *buf, unsigned count);
-
-void system(char *cmd_line);
+int strlen(const char *str);
+void strrev(unsigned char *str);
 
 #endif

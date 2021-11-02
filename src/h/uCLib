@@ -1,5 +1,5 @@
-#ifndef __ZFP_uCLIB_H
-#define __ZFP_uCLIB_H
+#ifndef __UCLIB_UCLIB_H
+#define __UCLIB_UCLIB_H
 
 /*
  * RISC OS uCLib (Micro C Library)
@@ -56,20 +56,17 @@
  *
  */
 
-#define  UNUSED(x)              (x = x)
+// Include required uCLib libraries:
+#include "CLib:swis.h"
 
-#define OS_WriteC    0x00
-#define OS_WriteS    0x01
-#define XOS_WriteS   0x20001
-#define OS_Write0    0x02
-#define XOS_Write0   0x20002
-#define OS_NewLine   0x03
-#define XOS_NewLine  0x20003
-#define OS_Exit      0x11
-#define XOS_Exit     0x20011
+// uCLib Macros:
+#define UNUSED(x) (x = x)
+#define ABEX 0x58454241
 
-#define ABEX         0x58454241
+// Data Types
+// typedef int size_t;
 
+// Public functions:
 void sys_exit(int error_code);
 
 int sys_write_stdout(const char *buf, unsigned count);
@@ -77,5 +74,7 @@ int sys_write_stdout(const char *buf, unsigned count);
 void sys_write_newline(void);
 
 int sys_write(unsigned fd, const char *buf, unsigned count);
+
+void system(char *cmd_line);
 
 #endif

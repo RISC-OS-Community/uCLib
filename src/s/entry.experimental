@@ -47,6 +47,9 @@
         GET     ListOpts
         GET     Macros
         GET     System
+        GET     OSEntries
+
+        AREA    |!!!!init$code|, CODE, READONLY
 
         IMPORT  main
         IMPORT  __RelocCode
@@ -64,41 +67,78 @@
 ;        EXPORT  malloc
 ;        EXPORT  free
 
-        AREA |Util$$Code|, CODE, READONLY, PIC
+;        AREA |Util$$Code|, CODE, READONLY, PIC
         ENTRY
+EXE_BaseAddr
+        ASSERT  EXE_WSSize   = . - EXE_BaseAddr
+        DCD     0                     ; Executable Workspace size
+        ASSERT  EXE_InitCode = . - EXE_BaseAddr
+        DCD     __main - EXE_BaseAddr ;
+EXE_SourceLen
+        DCD     0                     ;
+EXE_RelocateLen
+        DCD     0                     ; Should be SourceLen - Stub Size
 __main
         STMFD  sp!,{a1-a3,fp,lr}
-        MOV    r11,#0
-;        STR    a3,[lr, #malloc_ptr - continue]
-;continue
+        LDR    ip, [a1, #OSHdr_CompressOffset]
+        LDR    fp, EXE_RelocateLen
+        ADD    a4, ip, a1
+        STMFD  sp!, {a4,ip}
+        ADR    lr, continue
+        SUB    lr, lr, a4
+        ADD    lr, lr, a3 ; Relocated address to jump to
+10
+        LDR    a1, [a4], #4
+        SUBS   fp, fp, #4
+        STR    a1, [a3], #4
+        BNE    %BT10
+        ; Initialise mallocptr
+        STR    a3, [lr, #malloc_ptr-continue]
+        ; IMB the relocated code
+        MOV    a1, #1
+        MOV    a2, lr
+        LDR    pc, [sp, #12] ; Tail-call IMB func
+;        MOV    r11,#0
+continue
         BL     __RelocCode
-        LDMFD  sp!, {a1-a3,fp}
+        LDMFD  sp!, {a1-a2,fp,ip,lr}
+        MOV    a3, lr
+        LDR    a4, EXE_SourceLen
+        LDR    ip, [fp, #OSHdr_ImageSize]
+        SUB    a2, ip, a2
+        STR    a2, [sp, #-4]!
+        MOV    a2, sp
+        ; Fixup OS header
+        STR    ip, [fp, #OSHdr_CompressSize]
+        MOV    ip, #0
+        STR    ip, [fp,  #OSHdr_DecompressHdr]
+
         BL     main
         LDR    PC,[r13],#4
 
-;malloc_ptr
-;        DCD    0 ; I think this is required to track malloc next addr
-;malloc
-;        ADD    a2, a1, #3
-;        LDR    a1, malloc_ptr
-;        BIC    a2, a2, #3
-;        ADD    a2, a2, a1
-;        STR    a2, malloc_ptr
-;free
-;        MOV    pc, lr
-__rt_stkovf_split_small
-         MOV    pc, lr
-__rt_stkovf_split_big
-         SUB    ip, sp, ip
-         MOV    pc, lr
+malloc_ptr
+        DCD    0 ; I think this is required to track malloc next addr
+malloc
+        ADD    a2, a1, #3
+        LDR    a1, malloc_ptr
+        BIC    a2, a2, #3
+        ADD    a2, a2, a1
+        STR    a2, malloc_ptr
+free
+        MOV    pc, lr
+memcpy
+        SUBS   a3, a3, #1
+        LDRGEB a4, [a2, a3]
+        STRGEB a4, [a1, a3]
+        BGT    memcpy
+        MOV    pc, lr
 
-; The following experimental code is a modified version
-; of div.asm copyright Apple Inc.
-; distributed under BSD license
-;
-; We could rewrite it, right now I am just using it to
-; quickly test functions in C that requires it.
-;
+__rt_stkovf_split_small
+        MOV    ip, sp
+__rt_stkovf_split_big
+        SUB    ip, sp, ip
+        MOV    pc, lr
+
 ; Implement Divisions:
 ;
 ;UINT32
@@ -196,7 +236,7 @@ __arm_div1
     SUBS    r1, r0, r1
     MOVCC   r1, r0
     ADC     r0, r2, r2
-    BX      lr
+    B       r14
 __arm_div_negative
     ANDS    r2, r1, #0x80000000
     RSBMI   r1, r1, #0
@@ -254,10 +294,10 @@ label1
     ASRS    r3, r3, #31
     RSBMI   r0, r0, #0
     RSBCS   r1, r1, #0
-    BX      lr
+    B       r14
 
     ; What to do about division by zero?  For now, just return.
 __aeabi_idiv0
-    BX      lr
-    END
+    B       r14
 
+        END

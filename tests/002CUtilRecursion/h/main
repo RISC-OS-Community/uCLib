@@ -1,0 +1,10 @@
+#ifndef __ZFP_MAIN_H
+#define __ZFP_MAIN_H
+
+int fib(int);
+
+void print_num(int n);
+
+int main(int argc, char *argv[]);
+
+#endif

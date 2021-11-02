@@ -66,8 +66,20 @@
 
         AREA |Util$$Code|, CODE, READONLY, PIC
         ENTRY
+EXE_BaseAddr
+        ASSERT  EXE_WSSize   = . - EXE_BaseAddr
+        DCD     0                     ; Executable Workspace size
+        ASSERT  EXE_InitCode = . - EXE_BaseAddr
+        DCD     __main - EXE_BaseAddr ;
+EXE_SourceLen
+        DCD     0                     ;
+EXE_RelocateLen
+        DCD     0                     ; Should be SourceLen - Stub Size
 __main
         STMFD  sp!,{a1-a3,fp,lr}
+;        LDR    ip, [a1, #
+        LDR    fp, EXE_RelocateLen
+        ADD    a4, ip, a1
         MOV    r11,#0
 ;        STR    a3,[lr, #malloc_ptr - continue]
 ;continue
@@ -85,20 +97,13 @@ __main
 ;        ADD    a2, a2, a1
 ;        STR    a2, malloc_ptr
 ;free
-;        MOV    pc, lr
+        MOV    pc, lr
 __rt_stkovf_split_small
-         MOV    pc, lr
+        MOV    ip, sp
 __rt_stkovf_split_big
-         SUB    ip, sp, ip
-         MOV    pc, lr
+        SUB    ip, sp, ip
+        MOV    pc, lr
 
-; The following experimental code is a modified version
-; of div.asm copyright Apple Inc.
-; distributed under BSD license
-;
-; We could rewrite it, right now I am just using it to
-; quickly test functions in C that requires it.
-;
 ; Implement Divisions:
 ;
 ;UINT32
@@ -196,7 +201,7 @@ __arm_div1
     SUBS    r1, r0, r1
     MOVCC   r1, r0
     ADC     r0, r2, r2
-    BX      lr
+    B       r14
 __arm_div_negative
     ANDS    r2, r1, #0x80000000
     RSBMI   r1, r1, #0
@@ -254,10 +259,10 @@ label1
     ASRS    r3, r3, #31
     RSBMI   r0, r0, #0
     RSBCS   r1, r1, #0
-    BX      lr
+    B       r14
 
     ; What to do about division by zero?  For now, just return.
 __aeabi_idiv0
-    BX      lr
-    END
+    B       r14
 
+        END

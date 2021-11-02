@@ -1,6 +1,6 @@
 /*
  * RISC OS uCLib (Micro C Library)
- * 
+ *
  * purpouse: This is a small (micro) re-implementation of a generic
  *           C Library to use on RISC OS to build utils (transient)
  *           executables  using  the C  Programming  language  and,
@@ -14,7 +14,7 @@
  *
  *   author: Paolo Fabio Zaino
  *  release: 0.0.0
- * 
+ *
  * Copyright 2021 by Paolo Fabio Zaino
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,15 +57,24 @@
 
 #include "uCLib.h"
 
+void system(char *cmd_line)
+{
+	__asm
+	{
+		mov r0, cmd_line
+		SWI (OS_CLI + XOS_Bit), {r0}, {}, {PSR}
+	}
+}
+
 void sys_exit(int error_code)
 {
 	// TODO: Improve code to handle error block
 	__asm
 	{
-		MOV r0, #0
-		MOV r1, #ABEX
-		MOV r2, error_code
-		SWI OS_Exit, {r0-r2}, {}, {}
+		MOV a1, #0
+		MOV a2, #ABEX
+		MOV a3, error_code
+		SWI (OS_Exit + XOS_Bit), {r0-r2}, {}, {}
 	}
 }
 
@@ -76,27 +85,16 @@ int sys_write_stdout(const char *buf, unsigned count)
 		// Display a null terminated string
 		__asm
 		{
-			MOV r0, buf
-			SWI OS_Write0, {r0}
+			MOV   a1, buf
+			SWI   (OS_Write0 + XOS_Bit), {a1}, {}, {PSR}
 		}
 	} else {
 		// Display a string of "count" lenght
 		__asm
 		{
-			STMFD sp, {r0,r1,r2}
-			MOV   a1, #0
-			MOV   a2, buf
-			MOV   a3, count
-		loop:
-			LDRB  a1, [a2], #1
-			CMP   a3, #0
-			BEQ   done
-			SWI   OS_WriteC, {a1}
-			ADD   a2, a2, #1
-			SUBS  a3, a3, #1
-			B     loop
-		done:
-			LDMFD sp, {r0,r1,r2}
+			MOV   a1, buf
+			MOV   a2, count
+			SWI   (OS_WriteN + XOS_Bit), {a1}, {}, {PSR}
 		}
 	}
 	return rval;
@@ -107,7 +105,7 @@ void sys_write_newline(void)
 	// Display a New Line
 	__asm
 	{
-		SWI OS_NewLine
+		SWI (OS_NewLine + XOS_Bit)
 	}
 }
 

@@ -1,0 +1,80 @@
+/*
+ * Skeleton for a C based Util using the uCLib
+ *
+ *  author: Paolo Fabio Zaino
+ * purpose: showcase  and  test  basic functions of the
+ *          RISC OS uCLib.
+ *          Please Note: to compile  this file you need
+ *          the RISC OS uCLib installed and seen by the
+ *          RISC OS Filer.
+ *
+ * Copyright by Paolo Fabio Zaino
+ * Distributed under Apache License 2.0
+ *
+ */
+
+// Test very basic functionalities
+
+// Include the uCLib headers:
+#include "LibuCLib:uCLib.h"
+#include "LibuCLib:string.h"
+#include "LibuCLib:itoa.h"
+
+// include own header:
+#include "main.h"
+
+int fib(int n)
+{
+	if ( n <= 1 )
+		return n;
+	return fib(n - 1) + fib(n - 2);
+}
+
+void print_num(int n)
+{
+	// This function just prints the number as a string
+	char num[10];
+	itoa(n, (unsigned char *)num, 10, 10);
+	sys_write(1, num, 0);
+	sys_write_newline();
+	return;
+}
+
+// define main function in ANSI C99 format:
+int main(int argc, char *argv[])
+{
+	// Set some variables
+	int rval = 0;
+
+	// First test calcoulate a Fibonacci
+	// number for a seed of 9:
+	int top_recursion = 10;
+	sys_write(1, "Calcoulate Fibonacci for 9", 0);
+	sys_write_newline();
+
+	// Let's calcoulate a Fibonacci number usin grecursion
+	rval = fib(top_recursion);
+
+	// Now let's display the result as a string:
+	print_num(rval);
+	sys_write_newline();
+
+	// Second test calcoulate a Fibonacci
+	// number for a seed of 100
+	top_recursion = 20;
+	sys_write(1, "Calcoulate Fibonacci for 100", 0);
+	sys_write_newline();
+
+	// Let's calcoulate a Fibonacci number usin grecursion
+	rval = fib(top_recursion);
+
+	// Now let's display the result as a string:
+	print_num(rval);
+	sys_write_newline();
+
+	// End of the code:
+	return 0;
+	UNUSED(argc);
+	UNUSED(argv);
+}
+

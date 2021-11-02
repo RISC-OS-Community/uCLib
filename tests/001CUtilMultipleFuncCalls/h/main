@@ -1,0 +1,10 @@
+#ifndef __ZFP_MAIN_H
+#define __ZFP_MAIN_H
+
+void one(void);
+void two(void);
+void three(void);
+
+int main(int argc, char *argv[]);
+
+#endif

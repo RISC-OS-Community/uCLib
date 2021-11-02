@@ -1,0 +1,6 @@
+#ifndef __UCLIB_ITOA_H
+#define __UCLIB_ITOA_H
+
+int itoa(int num, unsigned char *str, int len, int base);
+
+#endif
