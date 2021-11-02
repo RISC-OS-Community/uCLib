@@ -1,0 +1,25 @@
+---------------------------------------------------------------
+- Lib Micro C Library (uCLib) for RISC OS
+- by Paolo Fabio Zaino 2021
+---------------------------------------------------------------
+
+_ Release 0.0.0 _
+
+-----------------------
+-  DISCLAIMER  -
+-----------------------
+
+This Library is copyright by the author and is distributed under Apache 2.0  license. Please read the license and the source files headers before using this library.
+
+-----------------------
+-  Intro  -
+-----------------------
+
+To be able to write Utils file in C on RISC OS you need to write all required infrastructure for C to work, that is a lot of work and can be complicated for people that do not understand ARM Assembly and RISC OS internals. So the function of this library is to provide the support required so that you can easly write Utils without having to write any assmely code and without having complicated (and unrealistic) dependecies to the SharedCLib or the ANSILib.
+
+---------------
+- FINAL NOTES -
+---------------
+Thanks for evaluating effort and eventually using it in your code, and, most of all, thanks for coding on RISC OS :)
+
+- Paolo

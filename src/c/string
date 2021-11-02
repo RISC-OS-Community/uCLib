@@ -1,0 +1,37 @@
+#include "string.h"
+
+int strlen(const char *str)
+{
+    // there is a sufficient example in the ROOL C/C++ documentation
+    // so for now I am reusing it
+    int len = 0;
+
+    __asm {
+                MOV   a1, str
+                MOV   a2, #0
+        loop:
+                LDRB  a3, [a1], #1
+                TEQ   a3, #0
+                ADDNE a2, a2, #1
+                BNE   loop
+
+            // Return string lenghts to C
+                MOV   len, a2
+    }
+
+    return len;
+}
+
+void strrev(unsigned char *str)
+{
+    int i;
+    int j;
+    unsigned char a;
+    unsigned len = strlen((const char *)str);
+    for (i = 0, j = len - 1; i < j; i++, j--)
+    {
+        a = str[i];
+        str[i] = str[j];
+        str[j] = a;
+    }
+}

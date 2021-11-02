@@ -1,0 +1,48 @@
+| Generic Library builder for DDE on RISC OS
+| by Paolo Fabio Zaino
+
+echo ++++++++++++++++++++++++
+echo ++ Building using DDE ++
+echo ++++++++++++++++++++++++
+
+Set Build$Root <Obey$Dir>
+
+WimpSlot -min 4096k
+
+echo ---------------------
+echo Building the Library:
+echo ---------------------
+
+Dir <Build$Root>.src
+amu all_libs -f MakeFileDDE
+|amu all_libs THROWBACK=-throwback -f MakeFileDDE
+|amu debug THROWBACK=-throwback -f MakeFileDDE
+
+echo
+echo ---------------------
+echo
+
+echo ---------------------
+echo Copying built artifacts:
+echo ---------------------
+
+IfThere @.o.entry   Then copy @.o.entry   @.^.!LibuCLib.o.entry   ~C F
+IfThere @.o.uCLib   Then copy @.o.uCLib   @.^.!LibuCLib.o.uCLib   ~C F
+IFThere @.o.uCLibzm Then copy @.o.uCLibzm @.^.!LibuCLib.o.uCLibzm ~C F
+
+IFThere @.h.*       Then copy @.h.*       @.^.!LibuCLib.h.*       ~C F
+
+echo ---------------------
+echo Building Tests:
+echo ---------------------
+
+Dir <Build$Root>.tests
+IfThere @.MakefileDDE Then amu all -f MakeFileDDE
+|IfThere @.MakefileDDE Then amu all THROWBACK=-throwback -f MakeFileDDE
+
+echo
+echo ---------------------
+echo
+
+Dir <Build$Root>
+

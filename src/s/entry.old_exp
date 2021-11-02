@@ -1,0 +1,268 @@
+; *
+; * RISC OS uCLib (Micro C Lib)
+; *
+; * This  is the  entry header  file  for the uSCLib, for more details
+; * please read the documentation in  the doc directory and the readme
+; * files provided with the source.
+; *
+; * Copyright 2021 by Paolo Fabio Zaino
+; *
+; * Redistribution and use in source and binary forms, with or without
+; * modification, are permitted provided that the following conditions
+; * are met:
+; * Redistributions  of  source code  must  retain the above copyright
+; * notice, this list of conditions,  the distribution license and the
+; * following disclaimer.
+; * Redistributions  in  binary  form   must   reproduce   the   above
+; * copyright  notice,  this  list  of  conditions  and  the following
+; * disclaimer  in  the documentation  and/or other materials provided
+; * with the distribution.
+; * Neither  the  name of the author nor the names of the contributors
+; * may  be  used  to  endorse  or  promote products derived from this
+; * software without specific prior written permission.
+; *
+; * Licensed  under  the  Apache License, Version 2.0 (the "License");
+; * you  may not  use  this file except in compliance with the License
+; * the restrictions above and the disclaimer below.
+; * You may obtain a copy of the License at
+; *
+; *      http://www.apache.org/licenses/LICENSE-2.0
+; *
+; * THIS  SOFTWARE  IS  PROVIDED   BY   THE   COPYRIGHT   HOLDERS  AND
+; * CONTRIBUTORS  "AS IS"  AND  ANY  EXPRESS  OR  IMPLIED  WARRANTIES,
+; * INCLUDING,  BUT  NOT  LIMITED  TO,   THE  IMPLIED   WARRANTIES  OF
+; * MERCHANTABILITY  AND  FITNESS  FOR   A   PARTICULAR   PURPOSE  ARE
+; * DISCLAIMED.
+; * IN  NO  EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+; * FOR  ANY  DIRECT,  INDIRECT,  INCIDENTAL,  SPECIAL,  EXEMPLARY, OR
+; * CONSEQUENTIAL  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
+; * OF  SUBSTITUTE  GOODS  OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+; * OR  BUSINESS  INTERRUPTION)  HOWEVER  CAUSED  AND ON ANY THEORY OF
+; * LIABILITY,  WHETHER  IN  CONTRACT,  STRICT  LIABILITY,   OR   TORT
+; * (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING IN ANY WAY OUT OF THE
+; * USE OF THIS SOFTWARE,  EVEN  IF ADVISED OF THE POSSIBILITY OF SUCH
+; * DAMAGE.
+; *
+
+        GET     ListOpts
+        GET     Macros
+        GET     System
+
+        IMPORT  main
+        IMPORT  __RelocCode
+
+        EXPORT  __main
+        EXPORT  __rt_stkovf_split_small
+        EXPORT  __rt_stkovf_split_big
+        EXPORT  __aeabi_uidiv
+        EXPORT  __aeabi_uidivmod
+        EXPORT  __aeabi_idiv
+        EXPORT  __aeabi_idivmod
+        EXPORT  __rt_udiv
+        EXPORT  __rt_sdiv
+
+;        EXPORT  malloc
+;        EXPORT  free
+
+        AREA |Util$$Code|, CODE, READONLY, PIC
+        ENTRY
+EXE_BaseAddr
+        ASSERT  EXE_WSSize   = . - EXE_BaseAddr
+        DCD     0                     ; Executable Workspace size
+        ASSERT  EXE_InitCode = . - EXE_BaseAddr
+        DCD     __main - EXE_BaseAddr ;
+EXE_SourceLen
+        DCD     0                     ;
+EXE_RelocateLen
+        DCD     0                     ; Should be SourceLen - Stub Size
+__main
+        STMFD  sp!,{a1-a3,fp,lr}
+;        LDR    ip, [a1, #
+        LDR    fp, EXE_RelocateLen
+        ADD    a4, ip, a1
+        MOV    r11,#0
+;        STR    a3,[lr, #malloc_ptr - continue]
+;continue
+        BL     __RelocCode
+        LDMFD  sp!, {a1-a3,fp}
+        BL     main
+        LDR    PC,[r13],#4
+
+;malloc_ptr
+;        DCD    0 ; I think this is required to track malloc next addr
+;malloc
+;        ADD    a2, a1, #3
+;        LDR    a1, malloc_ptr
+;        BIC    a2, a2, #3
+;        ADD    a2, a2, a1
+;        STR    a2, malloc_ptr
+;free
+        MOV    pc, lr
+__rt_stkovf_split_small
+        MOV    ip, sp
+__rt_stkovf_split_big
+        SUB    ip, sp, ip
+        MOV    pc, lr
+
+; Implement Divisions:
+;
+;UINT32
+;EFIAPI
+;__aeabi_uidivmod (
+;  IN UINT32  Dividend
+;  IN UINT32  Divisor
+;  );
+;
+__aeabi_uidiv
+__aeabi_uidivmod
+    RSBS    r12, r1, r0, LSR #4
+    MOV     r2, #0
+    BCC     __arm_div4
+    RSBS    r12, r1, r0, LSR #8
+    BCC     __arm_div8
+    MOV     r3, #0
+    B       __arm_div_large
+
+;
+;UINT64
+;EFIAPI
+;__rt_udiv (
+;  IN UINT32  Divisor,
+;  IN UINT32  Dividend
+;  );
+;
+__rt_udiv
+    ; Swap R0 and R1
+    MOV     r12, r0
+    MOV     r0, r1
+    MOV     r1, r12
+    B       __aeabi_uidivmod
+
+;
+;UINT64
+;EFIAPI
+;__rt_sdiv (
+;  IN INT32  Divisor,
+;  IN INT32  Dividend
+;  );
+;
+__rt_sdiv
+    ; Swap R0 and R1
+    MOV     r12, r0
+    MOV     r0, r1
+    MOV     r1, r12
+    B       __aeabi_idivmod
+
+;
+;INT32
+;EFIAPI
+;__aeabi_idivmod (
+;  IN INT32  Dividend
+;  IN INT32  Divisor
+;  );
+;
+__aeabi_idiv
+__aeabi_idivmod
+    ORRS    r12, r0, r1
+    BMI     __arm_div_negative
+    RSBS    r12, r1, r0, LSR #1
+    MOV     r2, #0
+    BCC     __arm_div1
+    RSBS    r12, r1, r0, LSR #4
+    BCC     __arm_div4
+    RSBS    r12, r1, r0, LSR #8
+    BCC     __arm_div8
+    MOV     r3, #0
+    B       __arm_div_large
+__arm_div8
+    RSBS    r12, r1, r0, LSR #7
+    SUBCS   r0, r0, r1, LSL #7
+    ADC     r2, r2, r2
+    RSBS    r12, r1, r0,LSR #6
+    SUBCS   r0, r0, r1, LSL #6
+    ADC     r2, r2, r2
+    RSBS    r12, r1, r0, LSR #5
+    SUBCS   r0, r0, r1, LSL #5
+    ADC     r2, r2, r2
+    RSBS    r12, r1, r0, LSR #4
+    SUBCS   r0, r0, r1, LSL #4
+    ADC     r2, r2, r2
+__arm_div4
+    RSBS    r12, r1, r0, LSR #3
+    SUBCS   r0, r0, r1, LSL #3
+    ADC     r2, r2, r2
+    RSBS    r12, r1, r0, LSR #2
+    SUBCS   r0, r0, r1, LSL #2
+    ADCS    r2, r2, r2
+    RSBS    r12, r1, r0, LSR #1
+    SUBCS   r0, r0, r1, LSL #1
+    ADC     r2, r2, r2
+__arm_div1
+    SUBS    r1, r0, r1
+    MOVCC   r1, r0
+    ADC     r0, r2, r2
+    B       r14
+__arm_div_negative
+    ANDS    r2, r1, #0x80000000
+    RSBMI   r1, r1, #0
+    EORS    r3, r2, r0, ASR #32
+    RSBCS   r0, r0, #0
+    RSBS    r12, r1, r0, LSR #4
+    BCC     label1
+    RSBS    r12, r1, r0, LSR #8
+    BCC     label2
+__arm_div_large
+    LSL     r1, r1, #6
+    RSBS    r12, r1, r0, LSR #8
+    ORR     r2, r2, #0xfc000000
+    BCC     label2
+    LSL     r1, r1, #6
+    RSBS    r12, r1, r0, LSR #8
+    ORR     r2, r2, #0x3f00000
+    BCC     label2
+    LSL     r1, r1, #6
+    RSBS    r12, r1, r0, LSR #8
+    ORR     r2, r2, #0xfc000
+    ORRCS   r2, r2, #0x3f00
+    LSLCS   r1, r1, #6
+    RSBS    r12, r1, #0
+    BCS     __aeabi_idiv0
+label3
+    LSRCS   r1, r1, #6
+label2
+    RSBS    r12, r1, r0, LSR #7
+    SUBCS   r0, r0, r1, LSL #7
+    ADC     r2, r2, r2
+    RSBS    r12, r1, r0, LSR #6
+    SUBCS   r0, r0, r1, LSL #6
+    ADC     r2, r2, r2
+    RSBS    r12, r1, r0, LSR #5
+    SUBCS   r0, r0, r1, LSL #5
+    ADC     r2, r2, r2
+    RSBS    r12, r1, r0, LSR #4
+    SUBCS   r0, r0, r1, LSL #4
+    ADC     r2, r2, r2
+label1
+    RSBS    r12, r1, r0, LSR #3
+    SUBCS   r0, r0, r1, LSL #3
+    ADC     r2, r2, r2
+    RSBS    r12, r1, r0, LSR #2
+    SUBCS   r0, r0, r1, LSL #2
+    ADCS    r2, r2, r2
+    BCS     label3
+    RSBS    r12, r1, r0, LSR #1
+    SUBCS   r0, r0, r1, LSL #1
+    ADC     r2, r2, r2
+    SUBS    r1, r0, r1
+    MOVCC   r1, r0
+    ADC     r0, r2, r2
+    ASRS    r3, r3, #31
+    RSBMI   r0, r0, #0
+    RSBCS   r1, r1, #0
+    B       r14
+
+    ; What to do about division by zero?  For now, just return.
+__aeabi_idiv0
+    B       r14
+
+        END

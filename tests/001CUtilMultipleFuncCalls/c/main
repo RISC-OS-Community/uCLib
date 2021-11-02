@@ -1,0 +1,60 @@
+/*
+ * Skeleton for a C based Util using the uCLib
+ *
+ *  author: Paolo Fabio Zaino
+ * purpose: showcase  and  test  basic functions of the
+ *          RISC OS uCLib.
+ *          Please Note: to compile  this file you need
+ *          the RISC OS uCLib installed and seen by the
+ *          RISC OS Filer.
+ *
+ * Copyright by Paolo Fabio Zaino
+ * Distributed under Apache License 2.0
+ *
+ */
+
+// Test very basic functionalities
+
+// Include the uCLib header:
+#include "LibuCLib:uCLib.h"
+
+// include own header:
+#include "main.h"
+
+void three(void)
+{
+	// This function does nothing but returns
+	sys_write(1, "Called three!", 0);
+	 return;
+}
+
+void two(void)
+{
+	// This function will call som eother function
+	sys_write(1, "Called two!", 0);
+	three();
+	return;
+}
+
+void one(void)
+{
+	// This function will call some other functions
+	sys_write(1, "Called one!", 0);
+	two();
+	return;
+}
+
+// define main function in ANSI C99 format:
+int main(int argc, char *argv[])
+{
+	// Set some variables
+	int rval = 0;
+
+	one();
+
+	// End of the code:
+	return rval;
+	UNUSED(argc);
+	UNUSED(argv);
+}
+

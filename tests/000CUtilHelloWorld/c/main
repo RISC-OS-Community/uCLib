@@ -1,0 +1,43 @@
+/*
+ * Skeleton for a C based Util using the uCLib
+ *
+ *  author: Paolo Fabio Zaino
+ * purpose: showcase  and  test  basic functions of the
+ *          RISC OS uCLib.
+ *          Please Note: to compile  this file you need
+ *          the RISC OS uCLib installed and seen by the
+ *          RISC OS Filer.
+ *
+ * Copyright by Paolo Fabio Zaino
+ * Distributed under Apache License 2.0
+ *
+ */
+
+// Test very basic functionalities
+
+// Include the uCLib header:
+#include "LibuCLib:uCLib.h"
+
+// include own header:
+#include "main.h"
+
+// define main function in ANSI C99 format:
+int main(int argc, char *argv[])
+{
+	// Set some variables
+	int rval = 0;
+
+	const char hwText[] = "Hello Util World!";
+
+	// Call basic functions:
+	sys_write(1, hwText, sizeof(hwText));
+	sys_write_newline();
+	sys_write(1, hwText, 0);
+	sys_write_newline();
+
+	// End of the code:
+	return rval;
+	UNUSED(argc);
+	UNUSED(argv);
+}
+

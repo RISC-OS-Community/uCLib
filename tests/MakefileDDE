@@ -1,0 +1,18 @@
+# Master Makefile
+
+TESTS=003CUtilCheckArgs 002CUtilRecursion 001CUtilMultipleFuncCalls 000CUtilHelloWorld
+
+.PHONY: $(TESTS)
+$(TESTS):
+	dir @.$@
+	amu all THROWBACK=-throwback -f MakefileDDE
+	RunMe
+	back
+
+.PHONY: all
+all: $(TESTS)
+
+.PHONY: clean
+clean:
+#	dir @.$<
+#	@.MkCleanDDE
