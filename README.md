@@ -3,17 +3,18 @@
 This is a simple and really small C Library to be used when creating Utils in C.
 
 ## Build the lib
-To build from the source just git clone this repo and then go to uCLib -> src directory.
+To build from the source just git clone this repo and then
+go to your uCLib then read the specific paragraph below fo ryour compiler.
 
 ## Building using ROOL DDE
 Before you try to build the lib make sure your RISC OS Filer has seen the what's inside the AcornC_C++ directory you created when installed ROOL DDE.
 
-To build the lib is very easy, just double click on the Mk script file you'll find in uCLib -> src.
+To build the lib is very easy, just double click on the MkDDE script file you'll find in your uCLib.
 
 The building process will copy the object files in !LibuCLib app in the right places and also the header files as required.
 
 ## Building using GCC
-At this time buildin gusing GCC is not yet supported, so please be patient, it will definitely be done as soon as the library gets useful enough.
+At this time building using GCC is not yet supported, so please be patient, it will definitely be done as soon as the library gets useful enough.
 
 ## How to use the library
 To understand the details of how to use it please have a look at the test files in tests

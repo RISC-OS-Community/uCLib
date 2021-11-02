@@ -14,7 +14,8 @@ echo Building the Library:
 echo ---------------------
 
 Dir <Build$Root>.src
-amu all_libs THROWBACK=-throwback -f MakeFileDDE
+amu all_libs -f MakeFileDDE
+|amu all_libs THROWBACK=-throwback -f MakeFileDDE
 |amu debug THROWBACK=-throwback -f MakeFileDDE
 
 echo
@@ -36,7 +37,8 @@ echo Building Tests:
 echo ---------------------
 
 Dir <Build$Root>.tests
-IfThere @.MakefileDDE Then make all THROWBACK=-throwback -f MakeFileDDE
+IfThere @.MakefileDDE Then amu all -f MakeFileDDE
+|IfThere @.MakefileDDE Then amu all THROWBACK=-throwback -f MakeFileDDE
 
 echo
 echo ---------------------
